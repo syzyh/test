@@ -6,7 +6,6 @@
     <title>test</title>
     <script src="echarts.js"></script>
     <script src="hammer.min.js"></script>
-    <script type="text/javascript" src="untitled.js"></script>
     <script type="text/javascript" src="../lib/jquery-2.1.1.min.js"></script>
 
 </head>
@@ -16,12 +15,12 @@
     height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    border-bottom: 20px solid #cc0;background: #fff;position: absolute;left:167px;top:349px;z-index:100"></div>
+    border-bottom: 20px solid #cc0;background: #fff;position: absolute;left:173px;top:349px;z-index:100"></div>
     <div id="mask2" style="   width: 0;
     height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    border-bottom: 20px solid #cc0;background: #fff;position: absolute;left:97px;top:341px;z-index:100"></div>
+    border-bottom: 20px solid #cc0;background: #fff;position: absolute;left:105px;top:349px;z-index:100"></div>
     <div id="main" style="width:350px;height:400px"></div>
     
     <script type="text/javascript">
@@ -45,6 +44,7 @@
             }
             option.series[i].markPoint.symbolSize = 10;
             option.series[mydata.selectedLineNum].markPoint.data[2].coord = getValue(option.series[mydata.selectedLineNum].data, option.series[0].markLine.data[0].xAxis);
+            option.series[mydata.selectedLineNum].markPoint.data[4].coord = getValue(option.series[mydata.selectedLineNum].data, option.series[0].markLine.data[1].xAxis);
             myChart.setOption(option);
         }
 
@@ -218,7 +218,10 @@
                                 symbolSize:[20,30],
                                 symbolOffset: [15,0],
                                 coord: [24,56]
-                            }
+                            },{
+                                name: '坐标值',
+                                coord: [7,15]
+                            },
                         ]
                     },
                     data: [
@@ -256,6 +259,9 @@
                                 symbolSize:[20,30],
                                 symbolOffset: [15,0],
                                 coord: [24,35]
+                            },{
+                                name: '坐标值',
+                                coord: [7,64]
                             }
                         ]
                     },
@@ -295,6 +301,9 @@
                                 symbolSize:[20,30],
                                 symbolOffset: [15,0],
                                 coord: [24,66]
+                            },{
+                                name: '坐标值',
+                                coord: [7,53]
                             }
                         ]
                     },
@@ -337,8 +346,8 @@
                 if(option.series[0].markLine.data[1].xAxis<0){
                   option.series[0].markLine.data[1].xAxis=0;  
                 }
-                mask2.style.left = (((option.series[0].markLine.data[1].xAxis-mydata.start*24)/((mydata.end - mydata.start)*24))*280+16).toString()+"px";
-                option.series[mydata.selectedLineNum].markPoint.data[2].coord = getValue(option.series[mydata.selectedLineNum].data, option.series[0].markLine.data[0].xAxis);
+                mask2.style.left = (((option.series[0].markLine.data[1].xAxis-mydata.start*24)/((mydata.end - mydata.start)*24))*280+21).toString()+"px";
+                option.series[mydata.selectedLineNum].markPoint.data[4].coord = getValue(option.series[mydata.selectedLineNum].data, option.series[0].markLine.data[1].xAxis);
                 myChart.setOption(option);
         });
         mc2.on("panend", function(ev) {
@@ -357,7 +366,7 @@
                 if(option.series[0].markLine.data[0].xAxis<0){
                   option.series[0].markLine.data[0].xAxis=0;  
                 }
-                mask.style.left = (((option.series[0].markLine.data[0].xAxis-mydata.start*24)/((mydata.end - mydata.start)*24))*280+16).toString()+"px";
+                mask.style.left = (((option.series[0].markLine.data[0].xAxis-mydata.start*24)/((mydata.end - mydata.start)*24))*280+21).toString()+"px";
                 option.series[mydata.selectedLineNum].markPoint.data[2].coord = getValue(option.series[mydata.selectedLineNum].data, option.series[0].markLine.data[0].xAxis);
                 myChart.setOption(option);
         });
