@@ -6,7 +6,7 @@
     <title>test</title>
     <script src="echarts.js"></script>
     <script src="hammer.min.js"></script>
-    <script type="text/javascript" src="../lib/jquery-2.1.1.min.js"></script>
+   
 
 </head>
 
@@ -21,7 +21,7 @@
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
     border-bottom: 20px solid #cc0;background: #fff;position: absolute;left:105px;top:349px;z-index:100"></div>
-    <div id="main" style="width:350px;height:400px"></div>
+    <div id="main" style="width:280px;height:400px;margin:0 auto"></div>
     
     <script type="text/javascript">
 
@@ -66,7 +66,8 @@
 
         }
         // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('main'));
+        var mainCanvas = document.getElementById('main');
+        var myChart = echarts.init(mainCanvas);
         var mask = document.getElementById('mask');
         var mask2 = document.getElementById('mask2');
         // 指定图表的配置项和数据
@@ -75,12 +76,10 @@
                 text: '液压系统'
             },
             tooltip: {
-                show: true,
+                show: false,
                 alwaysShowContent: true
             },
-            legend: {
-                data:['液压1','液压2']
-            },
+            
             grid: {
                 show: true,
             },
@@ -91,7 +90,7 @@
                     show: false,
                 },
                 axisLabel:{
-                    margin: 30,
+                    margin: 25,
                     formatter: function(value, index){
                         var head = Math.floor(value);
                         var tail = (value - head)*60;
@@ -110,7 +109,9 @@
             yAxis: [
                 {
                     type: 'value',
+                    
                     axisLabel: {
+                    	margin: 3,
                         formatter: function(value, index){
                             switch(value){
                                 case 25:
@@ -124,6 +125,9 @@
                                 default:
                                     return '';
                             }
+                        },
+                        textStyle:{
+                        	fontSize: 10,
                         }
                     },
                     axisTick:{
@@ -142,6 +146,10 @@
                 },
                 {
                     type: 'value',
+                    nameGap: 0,
+                    nameTextStyle:{
+                    	fontSize: 3,
+                    },
                     axisTick:{
                         show: false,
                     },
@@ -158,7 +166,7 @@
                     filterMode: 'filter'
                 }
             ],
-            animation: false,
+            animation: true,
             series: [
                 {
                     name: '液压1',
@@ -348,9 +356,12 @@
                 }
                 mask2.style.left = (((option.series[0].markLine.data[1].xAxis-mydata.start*24)/((mydata.end - mydata.start)*24))*280+21).toString()+"px";
                 option.series[mydata.selectedLineNum].markPoint.data[4].coord = getValue(option.series[mydata.selectedLineNum].data, option.series[0].markLine.data[1].xAxis);
+                option.animation = false;
                 myChart.setOption(option);
         });
         mc2.on("panend", function(ev) {
+        	option.animation = true;
+            myChart.setOption(option);
             mydata.mouseX = -1;
             mydata.moveline = 0;
             mydata.lineX2 = option.series[0].markLine.data[1].xAxis -2.85;
@@ -368,15 +379,33 @@
                 }
                 mask.style.left = (((option.series[0].markLine.data[0].xAxis-mydata.start*24)/((mydata.end - mydata.start)*24))*280+21).toString()+"px";
                 option.series[mydata.selectedLineNum].markPoint.data[2].coord = getValue(option.series[mydata.selectedLineNum].data, option.series[0].markLine.data[0].xAxis);
+                option.animation = false;
                 myChart.setOption(option);
         });
 
         mc.on("panend", function(ev) {
+        	option.animation = true;
+            myChart.setOption(option);
             mydata.mouseX = -1;
             mydata.moveline = 0;
             mydata.lineX = option.series[0].markLine.data[0].xAxis -2.85;
             mydata.slideLeft = mydata.slideLeft + ev.deltaX;
         });
+
+        window.onorientationchange= function(){
+
+        	if (window.orientation == 0 || window.orientation == 180) {
+        		mainCanvas.style.width = '300px';
+        		mainCanvas.style.height = '400px';
+        		myChart.resize();
+        	}
+        	if (window.orientation == 90 || window.orientation == -90) {
+        		mainCanvas.style.width = '700px';
+        		mainCanvas.style.height = '300px';
+        		myChart.resize();
+        	}
+        }
     </script>
 </body>
 </html>
+
