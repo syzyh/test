@@ -15,13 +15,13 @@
     height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    border-bottom: 20px solid #cc0;background: #fff;position: absolute;left:173px;top:349px;z-index:100"></div>
+    border-bottom: 20px solid #cc0;background: #fff;position: absolute;left:173px;top:349px;z-index:100;display:none"></div>
     <div id="mask2" style="   width: 0;
     height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    border-bottom: 20px solid #cc0;background: #fff;position: absolute;left:105px;top:349px;z-index:100"></div>
-    <div id="main" style="width:280px;height:400px;margin:0 auto"></div>
+    border-bottom: 20px solid #cc0;background: #fff;position: absolute;left:105px;top:349px;z-index:100;display:none"></div>
+    <div id="main" style="width:410px;height:400px;margin:0 auto"></div>
     
     <script type="text/javascript">
 
@@ -36,7 +36,18 @@
             start: 0,
             end: 1
         }
-        
+
+
+        function setSize(width,height,x1,x2){
+        	mainCanvas.style.width = width.toString()+'px';
+        	mainCanvas.style.height = height.toString()+'px';
+        	mask.style.display = 'block';
+        	setMaskPosition(mask,x1,width,height);
+        }
+        function setMaskPosition(obj,x,width,height){
+        	obj.style.left = (width/1.9+(13-13)*(width)/30).toString()+'px';
+        	obj.style.top = (height-51).toString()+'px';
+        }
         function changeLine(i){
             mydata.selectedLineNum = i;
             for(var j = 0;j<option.series.length;j++){
@@ -63,13 +74,27 @@
 
         function insertData(data,i){
             option.series[i].data.splice(Math.floor(data[0])+1,0,data);
+        }
 
+        function orientationSize(){
+
+        	if (window.orientation == 0 || window.orientation == 180) {
+        		setSize(chartsWidth1,chartsHeight1);
+        		myChart.resize();
+        	}
+        	if (window.orientation == 90 || window.orientation == -90) {
+        		setSize(chartsWidth2,chartsHeight2);
+        		myChart.resize();
+        	}
         }
         // 基于准备好的dom，初始化echarts实例
         var mainCanvas = document.getElementById('main');
-        var myChart = echarts.init(mainCanvas);
         var mask = document.getElementById('mask');
         var mask2 = document.getElementById('mask2');
+        var chartsWidth1 = Math.max(screen.width-8,280);
+        var chartsHeight1 = Math.min(screen.height-4,400);
+        var chartsWidth2 = Math.max(screen.height-8,280);
+        var chartsHeight2 = Math.min(screen.height-4,350);
         // 指定图表的配置项和数据
         var option = {
             title: {
@@ -324,7 +349,17 @@
 
 
         // 使用刚指定的配置项和数据显示图表。
+        (function(){
+        	if (window.orientation == 0 || window.orientation == 180) {
+        		setSize(chartsWidth1,chartsHeight1);
+        	}
+        	if (window.orientation == 90 || window.orientation == -90) {
+        		setSize(chartsWidth2,chartsHeight2);
+        	}
+        })();
+        var myChart = echarts.init(mainCanvas);
         myChart.setOption(option);
+
 
         myChart.on('click',function(param) {
             if(param.componentType == "markPoint"){
@@ -395,13 +430,11 @@
         window.onorientationchange= function(){
 
         	if (window.orientation == 0 || window.orientation == 180) {
-        		mainCanvas.style.width = '300px';
-        		mainCanvas.style.height = '400px';
+        		setSize(chartsWidth1,chartsHeight1);
         		myChart.resize();
         	}
         	if (window.orientation == 90 || window.orientation == -90) {
-        		mainCanvas.style.width = '700px';
-        		mainCanvas.style.height = '300px';
+        		setSize(chartsWidth2,chartsHeight2);
         		myChart.resize();
         	}
         }
