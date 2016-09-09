@@ -11,16 +11,15 @@
 </head>
 
 <body>
-    <div id="mask" style="   width: 0;
+    <div id="mask" style="   width: 20px;
     height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
     border-bottom: 20px solid #cc0;background: #fff;position: absolute;left:173px;top:349px;z-index:100;display:none"></div>
-    <div id="mask2" style="   width: 0;
-    height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-    border-bottom: 20px solid #cc0;background: #fff;position: absolute;left:105px;top:349px;z-index:100;display:none"></div>
+    <div id="mask2" style="   width: 20px;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 20px solid #cc0;background: #fff;position: absolute;left:105px;top:349px;z-index:100"></div>
     <div id="main" style="width:410px;height:400px;margin:0 auto"></div>
     
     <script type="text/javascript">
@@ -42,10 +41,14 @@
         	mainCanvas.style.width = width.toString()+'px';
         	mainCanvas.style.height = height.toString()+'px';
         	mask.style.display = 'block';
+        	mask2.style.display = 'block';
         	setMaskPosition(mask,x1,width,height);
+        	setMaskPosition(mask2,x2,width,height);
+            mask.style.left = ((trueWidth*0.51+(((option.series[0].markLine.data[0].xAxis-mydata.start*24)/(mydata.end - mydata.start))-13)*(trueWidth)/30)).toString()+"px";
+            mask2.style.left = ((trueWidth*0.51+(((option.series[0].markLine.data[1].xAxis-mydata.start*24)/(mydata.end - mydata.start))-13)*(trueWidth)/30)).toString()+"px";
         }
         function setMaskPosition(obj,x,width,height){
-        	obj.style.left = (width/1.9+(13-13)*(width)/30).toString()+'px';
+        	obj.style.left = (width*0.51+(x-13)*(width)/30).toString()+'px';
         	obj.style.top = (height-51).toString()+'px';
         }
         function changeLine(i){
@@ -53,7 +56,7 @@
             for(var j = 0;j<option.series.length;j++){
                 option.series[j].markPoint.symbolSize = 0;
             }
-            option.series[i].markPoint.symbolSize = 10;
+            option.series[i].markPoint.symbolSize = 15;
             option.series[mydata.selectedLineNum].markPoint.data[2].coord = getValue(option.series[mydata.selectedLineNum].data, option.series[0].markLine.data[0].xAxis);
             option.series[mydata.selectedLineNum].markPoint.data[4].coord = getValue(option.series[mydata.selectedLineNum].data, option.series[0].markLine.data[1].xAxis);
             myChart.setOption(option);
@@ -79,11 +82,11 @@
         function orientationSize(){
 
         	if (window.orientation == 0 || window.orientation == 180) {
-        		setSize(chartsWidth1,chartsHeight1);
+        		setSize(chartsWidth1,chartsHeight1,option.series[0].markLine.data[0].xAxis,option.series[0].markLine.data[1].xAxis);
         		myChart.resize();
         	}
         	if (window.orientation == 90 || window.orientation == -90) {
-        		setSize(chartsWidth2,chartsHeight2);
+        		setSize(chartsWidth2,chartsHeight2,option.series[0].markLine.data[0].xAxis,option.series[0].markLine.data[1].xAxis);
         		myChart.resize();
         	}
         }
@@ -94,11 +97,15 @@
         var chartsWidth1 = Math.max(screen.width-8,280);
         var chartsHeight1 = Math.min(screen.height-4,400);
         var chartsWidth2 = Math.max(screen.height-8,280);
-        var chartsHeight2 = Math.min(screen.height-4,350);
+        var chartsHeight2 = Math.min(screen.width-30,350);
+        var trueWidth ,trueHeight;
+
         // 指定图表的配置项和数据
         var option = {
             title: {
-                text: '液压系统'
+                show: false,
+                text: '液压系统',
+
             },
             tooltip: {
                 show: false,
@@ -199,6 +206,7 @@
                     smooth: true,
                     symbolSize: 1,
                     hoverAnimation: false,
+                    clipOverflow: false,
                     markLine: {
                         label: {
                             normal: {
@@ -228,10 +236,16 @@
                     },
                     markPoint: {
                         symbol: 'emptyCircle',
-                        symbolSize: 10,
+                        symbolSize: 15,
                         label: {
                             normal: {
-                                show: false
+                                show: true,
+                                formatter:function(params){
+                                    return Math.floor(params.data.coord[1]).toString();
+                                },
+                                textStyle:{
+                                    color: '#000'
+                                }
                             }
                         },
                         data: [
@@ -247,6 +261,11 @@
                                 coord: [13,67]
                             },{
                                 symbol: 'triangle',
+                                label: {
+                                    normal: {
+                                        show: false,
+                                    }
+                                },
                                 symbolRotate: 90,
                                 symbolSize:[20,30],
                                 symbolOffset: [15,0],
@@ -272,7 +291,13 @@
                         symbolSize: 0,
                         label: {
                             normal: {
-                                show: false
+                                show: true,
+                                formatter:function(params){
+                                    return Math.floor(params.data.coord[1]).toString();
+                                },
+                                textStyle:{
+                                    color: '#000'
+                                }
                             }
                         },
                         data: [
@@ -288,6 +313,11 @@
                                 coord: [13,36]
                             },{
                                 symbol: 'triangle',
+                                label: {
+                                    normal: {
+                                        show: false,
+                                    }
+                                },
                                 symbolRotate: 90,
                                 symbolSize:[20,30],
                                 symbolOffset: [15,0],
@@ -314,7 +344,13 @@
                         symbolSize: 0,
                         label: {
                             normal: {
-                                show: false
+                                show: true,
+                                formatter:function(params){
+                                    return Math.floor(params.data.coord[1]).toString();
+                                },
+                                textStyle:{
+                                    color: '#000'
+                                }
                             }
                         },
                         data: [
@@ -330,6 +366,11 @@
                                 coord: [13,54]
                             },{
                                 symbol: 'triangle',
+                                label: {
+                                    normal: {
+                                        show: false,
+                                    }
+                                },
                                 symbolRotate: 90,
                                 symbolSize:[20,30],
                                 symbolOffset: [15,0],
@@ -351,11 +392,16 @@
         // 使用刚指定的配置项和数据显示图表。
         (function(){
         	if (window.orientation == 0 || window.orientation == 180) {
-        		setSize(chartsWidth1,chartsHeight1);
+                trueWidth = chartsWidth1;
+                trueHeight = chartsHeight1;
+                setSize(trueWidth,trueHeight,option.series[0].markLine.data[0].xAxis,option.series[0].markLine.data[1].xAxis);
         	}
         	if (window.orientation == 90 || window.orientation == -90) {
-        		setSize(chartsWidth2,chartsHeight2);
+                trueWidth = chartsWidth2;
+                trueHeight = chartsHeight2;
+        		setSize(trueWidth,trueHeight,option.series[0].markLine.data[0].xAxis,option.series[0].markLine.data[1].xAxis);
         	}
+
         })();
         var myChart = echarts.init(mainCanvas);
         myChart.setOption(option);
@@ -370,8 +416,18 @@
         myChart.on('datazoom', function (params) {
             mydata.start = params.batch[0].start/100;
             mydata.end = params.batch[0].end/100;
-            mask.style.left = (((option.series[0].markLine.data[0].xAxis-mydata.start*24)/((mydata.end - mydata.start)*24))*280+16).toString()+"px";
-            mask2.style.left = (((option.series[0].markLine.data[1].xAxis-mydata.start*24)/((mydata.end - mydata.start)*24))*280+16).toString()+"px";
+            if(option.series[0].markLine.data[0].xAxis<mydata.start*24||option.series[0].markLine.data[0].xAxis>mydata.end*24){
+                mask.style.display = 'none';
+            }else{
+                mask.style.display = 'block';
+            }
+            if(option.series[0].markLine.data[1].xAxis<mydata.start*24||option.series[0].markLine.data[1].xAxis>mydata.end*24){
+                mask2.style.display = 'none';
+            }else{
+                mask2.style.display = 'block';
+            }
+            mask.style.left = ((trueWidth*0.51+(((option.series[0].markLine.data[0].xAxis-mydata.start*24)/(mydata.end - mydata.start))-13)*(trueWidth)/30)).toString()+"px";
+            mask2.style.left = ((trueWidth*0.51+(((option.series[0].markLine.data[1].xAxis-mydata.start*24)/(mydata.end - mydata.start))-13)*(trueWidth)/30)).toString()+"px";
             option.series[0].markPoint.data[3].coord=getValue(option.series[0].data, mydata.end*24-0.01);
             option.series[1].markPoint.data[3].coord=getValue(option.series[1].data, mydata.end*24-0.01);
             option.series[2].markPoint.data[3].coord=getValue(option.series[2].data, mydata.end*24-0.01);
@@ -382,14 +438,14 @@
         var mc2 = new Hammer(mask2);
 
         mc2.on("pan", function(ev) {
-                option.series[0].markLine.data[1].xAxis = (ev.deltaX/13)*(mydata.end - mydata.start) + mydata.lineX2 + 2.85;
+                option.series[0].markLine.data[1].xAxis = 30*(ev.deltaX/trueWidth)*(mydata.end - mydata.start) + mydata.lineX2 + 2.85;
                 if(option.series[0].markLine.data[1].xAxis>24){
                   option.series[0].markLine.data[1].xAxis=24;  
                 }
                 if(option.series[0].markLine.data[1].xAxis<0){
                   option.series[0].markLine.data[1].xAxis=0;  
                 }
-                mask2.style.left = (((option.series[0].markLine.data[1].xAxis-mydata.start*24)/((mydata.end - mydata.start)*24))*280+21).toString()+"px";
+                mask2.style.left = ((trueWidth*0.51+(((option.series[0].markLine.data[1].xAxis-mydata.start*24)/(mydata.end - mydata.start))-13)*(trueWidth)/30)).toString()+"px";
                 option.series[mydata.selectedLineNum].markPoint.data[4].coord = getValue(option.series[mydata.selectedLineNum].data, option.series[0].markLine.data[1].xAxis);
                 option.animation = false;
                 myChart.setOption(option);
@@ -405,14 +461,14 @@
         var mc = new Hammer(mask);
 
         mc.on("pan", function(ev) {
-                option.series[0].markLine.data[0].xAxis = (ev.deltaX/13)*(mydata.end - mydata.start) + mydata.lineX + 2.85;
+                option.series[0].markLine.data[0].xAxis = 30*(ev.deltaX/trueWidth)*(mydata.end - mydata.start) + mydata.lineX + 2.85;
                 if(option.series[0].markLine.data[0].xAxis>24){
                   option.series[0].markLine.data[0].xAxis=24;  
                 }
                 if(option.series[0].markLine.data[0].xAxis<0){
                   option.series[0].markLine.data[0].xAxis=0;  
                 }
-                mask.style.left = (((option.series[0].markLine.data[0].xAxis-mydata.start*24)/((mydata.end - mydata.start)*24))*280+21).toString()+"px";
+                mask.style.left = ((trueWidth*0.51+(((option.series[0].markLine.data[0].xAxis-mydata.start*24)/(mydata.end - mydata.start))-13)*(trueWidth)/30)).toString()+"px";
                 option.series[mydata.selectedLineNum].markPoint.data[2].coord = getValue(option.series[mydata.selectedLineNum].data, option.series[0].markLine.data[0].xAxis);
                 option.animation = false;
                 myChart.setOption(option);
@@ -430,13 +486,15 @@
         window.onorientationchange= function(){
 
         	if (window.orientation == 0 || window.orientation == 180) {
-        		setSize(chartsWidth1,chartsHeight1);
-        		myChart.resize();
+                trueWidth = chartsWidth1;
+                trueHeight = chartsHeight1;
         	}
         	if (window.orientation == 90 || window.orientation == -90) {
-        		setSize(chartsWidth2,chartsHeight2);
-        		myChart.resize();
+        		trueWidth = chartsWidth2;
+                trueHeight = chartsHeight2;
         	}
+            setSize(trueWidth,trueHeight,option.series[0].markLine.data[0].xAxis,option.series[0].markLine.data[1].xAxis);
+            myChart.resize();
         }
     </script>
 </body>
